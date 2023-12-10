@@ -109,7 +109,7 @@ $(document).ready(function () {
                 scrollPostion += cardWidth
                 $("#popular-videos .card-carousel .carousel-inner").animate({ scrollLeft: scrollPostion }, 400);
             });
-        
+
             $("#popular-videos .card-carousel .carousel-control-prev").on("click", function () {
                 if (scrollPostion <= 0) {
                     return;
@@ -120,7 +120,7 @@ $(document).ready(function () {
                 $("#popular-videos .card-carousel .carousel-inner").animate({ scrollLeft: scrollPostion }, 400);
             });
 
-            
+
         },
         error: function (error) {
             console.error(error);
@@ -185,7 +185,7 @@ $(document).ready(function () {
                 scrollPostion += cardWidth
                 $("#latest-videos .card-carousel .carousel-inner").animate({ scrollLeft: scrollPostion }, 400);
             });
-        
+
             $("#latest-videos .card-carousel .carousel-control-prev").on("click", function () {
                 if (scrollPostion <= 0) {
                     return;
@@ -196,7 +196,7 @@ $(document).ready(function () {
                 $(".card-carousel .carousel-inner").animate({ scrollLeft: scrollPostion }, 400);
             });
 
-            
+
         },
         error: function (error) {
             console.error(error);
@@ -217,5 +217,132 @@ $(document).ready(function () {
             console.error(error)
         }
     });
+});
+
+
+
+$(document).ready(function () {
+
+    function loading() {
+        $("#courses").append(
+            $('<div class="w-100 h-100 d-flex justify-content-center align-items-center" id="courses-loading">').append(
+                $('<div class="spinner-border text-primary spinner-border-lg" style="width: 4rem; height: 4rem;" role="status">').append(
+                    $('<span class="sr-only">').text("Loading...")
+                )
+            )
+        )
+    }
+    let knowledgeLevel = null;
+    let category = null;
+    let q = null
+    console.log($(".dropdown"))
+
+    $('.custom-select').on('change', function () {
+        $('#courses-container').remove();
+        loading()
+        filter();
+    })
+
+    $("#q").on("keypress", function (event) {
+        if (event.which === 13) {
+            $('#courses-container').remove();
+            loading()
+            event.preventDefault();
+            filter();
+        }
+    });
+
+
+
+    function filter() {
+        console.log("I ran")
+        const q = $("#q").val();
+        const topic = $(".topic").val();
+        const sort = $(".sort").val();
+
+        $.ajax({
+            url: "https://smileschool-api.alx-tools.com/courses",
+            method: "GET",
+            data: {
+                q,
+                topic,
+                sort
+            },
+            success: function (response) {
+                console.log(response)
+                const { courses } = response;
+                $("#courses-loading").remove();
+                
+                $("#courses").append(
+                    $('<div class="container d-flex flex-wrap justify-content-center" style="gap: 20px" id="courses-container">').append(
+                        courses.map(course => {
+                            return $('<div class="card border-0" style="width: 18rem;">').append(
+                                $(`<img src="${course.thumb_url}" class="card-img-top" alt="Card Image">`),
+                                $('<div class="card-body px-0" style="border: none;">').append(
+                                    $('<h5 class="card-title">').text(course.title),
+                                    $('<p class="card-text" style="opacity: 0.7;">').text(course["sub-title"]),
+                                ),
+                                $('<div class="card-footer px-0 bg-white">').append(
+                                    $('<div class="d-flex" style="gap: 20px;">').append(
+                                        $('<img src="images/profile_1.jpg" class="rounded-circle" width=30 height=30 alt="">'),
+                                        $('<p style="color: rgba(194, 113, 255, 1);">').text(course.author)
+                                    ),
+                                    $('<div>').append(
+                                        Array(course.star).fill(0).map(() => {
+                                            return $('<img src="images/star_on.png" alt="">')
+                                        })
+                                    )
+                                )
+                            )
+                        })
+                    )
+                )
+            },
+            error: function (error) {
+                console.error(error)
+            }
+        });
+    }
+
+
+    // filter()
+    // $.ajax({
+    //     url: "https://smileschool-api.alx-tools.com/courses",
+    //     method: "GET",
+    //     success: function (response) {
+    //         console.log(response)
+    //         const { courses } = response;
+    //         $("#courses-loading").remove();
+    //         $("#courses").append(
+    //             $('<div class="container d-flex flex-wrap justify-content-center" style="gap: 20px">').append(
+    //                 courses.map(course => {
+    //                     return $('<div class="card border-0" style="width: 18rem;">').append(
+    //                         $(`<img src="${course.thumb_url}" class="card-img-top" alt="Card Image">`),
+    //                         $('<div class="card-body px-0" style="border: none;">').append(
+    //                             $('<h5 class="card-title">').text(course.title),
+    //                             $('<p class="card-text" style="opacity: 0.7;">').text(course["sub-title"]),
+    //                         ),
+    //                         $('<div class="card-footer px-0 bg-white">').append(
+    //                             $('<div class="d-flex" style="gap: 20px;">').append(
+    //                                 $('<img src="images/profile_1.jpg" class="rounded-circle" width=30 height=30 alt="">'),
+    //                                 $('<p style="color: rgba(194, 113, 255, 1);">').text(course.author)
+    //                             ),
+    //                             $('<div>').append(
+    //                                 Array(course.star).fill(0).map(() => {
+    //                                     return $('<img src="images/star_on.png" alt="">')
+    //                                 })
+    //                             )
+    //                         )
+    //                     )
+    //                 })
+    //             )
+    //         )
+    //     },
+    //     error: function (error) {
+    //         console.error(error)
+    //     }
+    // });
+
+    filter()
 });
 
