@@ -1,12 +1,10 @@
 
-console.log("working ===")
 
 $.ajax({
     url: "https://smileschool-api.alx-tools.com/quotes",
     method: "GET",
     success: function (response) {
         $("#quotes-loading").remove();
-        console.log(response);
         const quotes = response;
         $("#quotes-container").append(
             $('<div id="carouselExampleControls" class="carousel slide h-100" data-ride="carousel">').append(
@@ -64,7 +62,6 @@ $(document).ready(function () {
         url: "https://smileschool-api.alx-tools.com/popular-tutorials",
         method: "GET",
         success: function (response) {
-            console.log(response);
             const videos = response;
             $("#popular-videos-loading").remove();
             $("#popular-videos").append(
@@ -141,7 +138,6 @@ $(document).ready(function () {
         method: "GET",
         success: function (response) {
 
-            console.log(response, '====++++======');
             const videos = response;
             $("#latest-videos-loading").remove();
             $("#latest-videos").append(
@@ -204,6 +200,21 @@ $(document).ready(function () {
         },
         error: function (error) {
             console.error(error);
+        }
+    });
+});
+
+
+
+$(document).ready(function () {
+    $.ajax({
+        url: "https://smileschool-api.alx-tools.com/quotes",
+        method: "GET",
+        success: function (response) {
+            console.log(response)
+        },
+        error: function (error) {
+            console.error(error)
         }
     });
 });
